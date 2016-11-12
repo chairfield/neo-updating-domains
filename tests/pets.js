@@ -7,11 +7,13 @@ var Path = require('path');
 var Request = require('supertest');
 var Mockgen = require('../data/mockgen.js');
 var Parser = require('swagger-parser');
+var Validator = require('is-my-json-valid');
+
 /**
- * Test for /pets
+ * Test for /query
  */
-Test('/pets', function (t) {
-    var apiPath = Path.resolve(__dirname, '../config/swagger.json');
+Test('/query', function (t) {
+    var apiPath = Path.resolve(__dirname, '../config/swagger.yaml');
     var App = Express();
     App.use(BodyParser.json());
     App.use(BodyParser.urlencoded({
@@ -25,13 +27,46 @@ Test('/pets', function (t) {
         t.error(err, 'No parse error');
         t.ok(api, 'Valid swagger api');
         /**
+         * summary: Query graph by domain
+         * parameters: domain, depth
+         * produces: GraphResponse, Error
+         * responses: 200, default
+         * operationId: queryByDomain
+         */
+        t.test('test queryByDomain get operation', function(t) {
+            Mockgen().requests({
+                path: '/query',
+                operation: 'get'
+            }, function(err, mock) {
+                t.error(err, 'No parse error');
+                t.ok(mock, 'mock ok');
+                t.ok(mock.request, 'mock.request ok');
+
+                var request = Request(App).get(mock.request.path);
+                request.end(function(err, res) {
+                    t.error(err, 'No error on response');
+                    t.ok(res.statusCode === 200, 'Ok response status');
+
+                    var response = res.body;
+                    if (Object.keys(response).length <= 0) {
+                        response = res.text;
+                    }
+
+                    var validate = Validator(api.paths['/query']['get']['responses']['200']['schema']);
+                    t.ok(validate(response), 'Response is valid json');
+                    t.error(validate.errors, 'No validation errors');
+                    t.end();
+                });
+            });
+        });
+        /**
          * summary: List all pets
          * description: 
          * parameters: limit
          * produces: 
          * responses: 200, default
          */
-        t.test('test listPets get operation', function (t) {
+        /*t.test('test listPets get operation', function (t) {
             Mockgen().requests({
                 path: '/pets',
                 operation: 'get'
@@ -73,14 +108,15 @@ Test('/pets', function (t) {
                     t.end();
                 });
             });
-        });/**
+        });*/
+        /**
          * summary: Create a pet
          * description: 
          * parameters: 
          * produces: 
          * responses: 201, default
          */
-        t.test('test createPets post operation', function (t) {
+        /*t.test('test createPets post operation', function (t) {
             Mockgen().requests({
                 path: '/pets',
                 operation: 'post'
@@ -114,6 +150,6 @@ Test('/pets', function (t) {
                     t.end();
                 });
             });
-        });
+        });*/
     });
 });
