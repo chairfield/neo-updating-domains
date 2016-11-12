@@ -14,7 +14,7 @@ module.exports = {
     get: function queryByDomain(req, res, next) {
         /**
          * Get the data for response 200
-         * For response `default` status 200 is used.
+         * TODO: Currently, for response `default` status 200 is used.
          */
         var status = 200;
         var provider = dataProvider['get']['200'];
@@ -23,7 +23,7 @@ module.exports = {
                 next(err);
                 return;
             }
-            res.status(status).send(data && data.responses);
+            res.status(status).send(data[0]['properties']);
         });
     }
 };

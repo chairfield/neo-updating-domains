@@ -32,7 +32,7 @@ paths:
         "200":
           description: Subset of the graph starting at domain
           schema:
-            $ref: "#/definitions/GraphResponse"
+            $ref: "#/definitions/Node"
         default:
           description: Error
           schema:
