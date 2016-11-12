@@ -17,12 +17,13 @@ App.use(BodyParser.urlencoded({
 
 App.use(Swaggerize({
     api: Path.resolve('./config/swagger.json'),
+    docspath: '/',
     handlers: Path.resolve('./handlers')
 }));
 
 Server.listen(8000, function () {
     App.swagger.api.host = this.address().address + ':' + this.address().port;
     /* eslint-disable no-console */
-    console.log('App running on %s:%d', this.address().address, this.address().port);
+    console.log('App running on %s', App.swagger.api.host);
     /* eslint-disable no-console */
 });
