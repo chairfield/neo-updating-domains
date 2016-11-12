@@ -12,6 +12,33 @@ consumes:
 produces:
   - application/json
 paths:
+  /query:
+    x-swagger-router-controller: query
+    get:
+      description: Query graph by domain
+      operationId: queryByDomain
+      parameters:
+        - name: domain
+          in: query
+          description: Exact domain name to query for
+          required: true
+          type: string
+        - name: depth
+          in: query
+          description: Depth to traverse in graph
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Subset of the graph starting at domain
+          schema:
+            $ref: "#/definitions/GraphResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - query
   /pets:
     x-swagger-router-controller: pets
     get:
@@ -28,16 +55,33 @@ paths:
         "200":
           description: A paged array of pets
           schema:
-            $ref: Pets
+            $ref: "#/definitions/Pets"
         default:
           description: Error
           schema:
-            $ref: Error
+            $ref: "#/definitions/Error"
       tags:
         - pets
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:
+  GraphResponse:
+    properties:
+      nodes:
+        type: array
+        items:
+          $ref: "#/definitions/Node"
+  Node:
+    properties:
+      id:
+        type: number
+        description: Unique ID (also popularity rank)
+      domain:
+        type: string
+        description: Domain Name
+      ip:
+        type: string
+        description: IP Address
   Pet:
     required:
       - id
@@ -52,16 +96,17 @@ definitions:
         type: string
   Pets:
     properties:
-      type: array
-      items:
-        $ref: Pet
+      pets:
+        type: array
+        items:
+          $ref: "#/definitions/Pet"
   Error:
     required:
       - code
       - message
     properties:
       code:
-        type: integer,
+        type: integer
         format: int32
       message:
         type: string
