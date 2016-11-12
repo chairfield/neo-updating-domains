@@ -22,9 +22,11 @@ App.use(Swaggerize({
     handlers: Path.resolve('./handlers')
 }));
 
-App.use('/', SwaggerUi({
+App.use('/ui', SwaggerUi({
     docs: '/docs'
 }));
+
+App.use('/', Express.static(__dirname + '/static'));
 
 Server.listen(8000, '127.0.0.1', function () {
     App.swagger.api.host = this.address().address + ':' + this.address().port;
