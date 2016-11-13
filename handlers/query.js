@@ -23,7 +23,7 @@ module.exports = {
                 next(err);
                 return;
             }
-            res.status(status).send(data[0]['properties']);
+            res.status(status).send(data);
         });
     }
 };
