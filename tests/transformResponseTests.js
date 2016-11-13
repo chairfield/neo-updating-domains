@@ -70,16 +70,16 @@ test('data/transformResponse.js', function (t) {
             ],
             links: [
                 {
-                    "source": 10,
-                    "target": 11
+                    "source": 0,
+                    "target": 1
                 },
                 {
-                    "source": 11,
-                    "target": 12
+                    "source": 1,
+                    "target": 2
                 },
                 {
-                    "source": 10,
-                    "target": 12
+                    "source": 0,
+                    "target": 2
                 }
             ]
         };

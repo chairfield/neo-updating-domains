@@ -25,9 +25,10 @@ module.exports = {
                 pushNode(record[2]);
             }
             if (record[0] && record[0].length > 0) {
+                // TODO: Make this not O(N^2)
                 links.push({
-                    source: record[0][0].start.low,
-                    target: record[0][0].end.low
+                    source: _.findIndex(nodes, function(n) { return n.id === record[0][0].start.low; }),
+                    target: _.findIndex(nodes, function(n) { return n.id === record[0][0].end.low; })
                 });
             }
         });

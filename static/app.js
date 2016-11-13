@@ -1,39 +1,25 @@
 
 $(function() {
-    renderGraph();
     //search();
 
     /*$("#search").submit(e => {
         e.preventDefault();
     search();*/
+
+    window.client = new SwaggerClient({
+        url: "/docs",
+        success: function() {
+            client.query.queryByDomain(
+                { domain: "google.com", depth: 1 },
+                { responseContentType: 'application/json' },
+                function(res) {
+                    renderGraph(res.obj);
+                });
+        }
+    });
 });
 
-function getGraph() {
-    return {
-        "nodes": [
-            {
-                "name": "node 1",
-                "artist": "artist name 1",
-                "id": "unique_id_1",
-                "playcount": 123
-            },
-            {
-                "name": "node 2",
-                "artist": "artist name 2",
-                "id": "unique_id_2",
-                "playcount": 234
-            }
-        ],
-        "links": [
-            {
-                "source": 0,
-                "target": 1
-            }
-        ]
-    };
-}
-
-function renderGraph() {
+function renderGraph(graph) {
     var width = 800, height = 800;
     var force = d3.layout.force().charge(-200).linkDistance(30).size([width, height]);
 
@@ -47,7 +33,6 @@ function renderGraph() {
         .attr("height", "100%")
         .attr("fill", "pink");
 
-    var graph = getGraph();
     force.nodes(graph.nodes).links(graph.links).start();
 
     var link = svg.selectAll(".link")

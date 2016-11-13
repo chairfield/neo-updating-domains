@@ -21,7 +21,6 @@ module.exports = {
             .run(query)
             .subscribe({
                 onNext: function(record) {
-                    console.log("On next: ", record._fields);
                     records.push(record._fields);
                 },
                 onCompleted: function() {

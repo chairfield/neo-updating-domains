@@ -3,6 +3,7 @@
 var Http = require('http');
 var Express = require('express');
 var BodyParser = require('body-parser');
+var Cors = require('cors');
 var Swaggerize = require('swaggerize-express');
 var SwaggerUi = require('swaggerize-ui');
 var Path = require('path');
@@ -15,6 +16,7 @@ App.use(BodyParser.json());
 App.use(BodyParser.urlencoded({
     extended: true
 }));
+App.use(Cors());
 
 App.use(Swaggerize({
     api: Path.resolve('./config/swagger.yaml'),
