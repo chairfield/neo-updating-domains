@@ -1,3 +1,3 @@
 # yo-express
 
-Swagger api [location](./config/swagger.json)
+Swagger api [location](./config/swagger.yaml)
