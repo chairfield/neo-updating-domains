@@ -3,6 +3,7 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver("bolt://localhost");
 // TODO: Remove this once I'm returning actual errors
 var Mockgen = require('./mockgen.js');
+var util = require('util');
 /**
  * Operations on /query
  */
@@ -18,8 +19,16 @@ module.exports = {
         200: function (req, res, callback) {
             var session = driver.session();
 
+            var query = util.format(
+                "MATCH (n{domain:\"%s\") OPTIONAL MATCH (n)-[r*1..%d]-(m) RETURN r, n, m;",
+                req.query.domain,
+                req.query.depth
+            );
+
+            // START n=node(212186) OPTIONAL MATCH (n)-[r*1..3]-(m) RETURN r, n, m;
             // "MATCH (n{domain:\"%s\"}) OPTIONAL MATCH (n)-[r]-() RETURN r, n;");
-            session.run("MATCH (n{domain:{domain}}) RETURN n;", { domain: req.query.domain })
+            session
+                .run(query)
                 .subscribe({
                     onNext: function(record) {
                         console.log(record._fields);
