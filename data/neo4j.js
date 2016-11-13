@@ -24,12 +24,11 @@ module.exports = {
                     records.push(record._fields);
                 },
                 onCompleted: function() {
-                    console.log("On complete: Closing session...");
                     session.close();
                     callback(null, responseTransformer.transformResponse(records));
                 },
                 onError: function(error) {
-                    console.log("On error: ", error);
+                    console.log("Neo4j error: ", error);
                     session.close();
                     callback(error, null);
                 }

@@ -28,6 +28,11 @@ paths:
           description: Depth to traverse in graph
           required: true
           type: number
+        - name: clientId
+          in: query
+          description: Client ID of socket.io connection; must pass to subscribe to changes
+          required: true
+          type: string
       responses:
         "200":
           description: Subset of the graph starting at domain

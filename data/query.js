@@ -1,5 +1,6 @@
 'use strict';
 var neo4j = require('./neo4j.js');
+var socketManager = require('../sockets/socketManager.js');
 // TODO: Remove this once I'm returning actual errors
 var Mockgen = require('./mockgen.js');
 /**
@@ -13,9 +14,14 @@ module.exports = {
      * responses: 200, default
      * operationId: queryByDomain
      */
+    // TODO: Why do I even have this?
     get: {
         200: function (req, res, callback) {
-            neo4j.queryByDomain(req.query.domain, req.query.depth, function(err, data) {
+            var domain = req.query.domain;
+            var depth = req.query.depth;
+            var clientId = req.query.clientId;
+            
+            neo4j.queryByDomain(domain, depth, function(err, data) {
                 if (err) {
                     callback(Mockgen().responses({
                         path: '/query',
@@ -23,10 +29,12 @@ module.exports = {
                         response: 'default'
                     }), null);
                 } else {
+                    socketManager.onQuery(domain, depth, clientId, data);
                     callback(null, data);
                 }
             });
         },
+        // TODO: Use or lose
         default: function (req, res, callback) {
             Mockgen().responses({
                 path: '/query',

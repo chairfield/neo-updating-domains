@@ -4,6 +4,7 @@ var sut = require('../data/responseTransformer.js');
 
 test('data/transformResponse.js', function (t) {
     t.test('test empty', function(t) {
+        // Arrange
         var records = [];
         var expected = {
             nodes: [],

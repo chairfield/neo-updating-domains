@@ -1,11 +1,41 @@
 
 $(function() {
+    var updateGraphFunc = initializeGraph();
+
+    // Possible events: connect, connect_error, connect_timeout,
+    //   reconnect, reconnect_attempt, reconnecting, reconnect_error, reconnect_failed
+    var socket = io();
+    socket.on('connect', function() {
+        // TODO: Show something when the socket is connected
+        window.client = new SwaggerClient({
+            url: "/docs",
+            success: function() {
+                $("#queryBtn").click(function() { onQuery(socket.id); });
+            }
+        });
+    });
+    socket.on('graphUpdated', function(updatedGraph) {
+        console.log("new data from socket.io:", updatedGraph);
+        updateGraphFunc(updatedGraph);
+    });
+
+    function onQuery(clientId) {
+        var domain = $("#domainInput").val();
+        var depth = $("#depthInput").val();
+        // TODO: Input validation (e.g., empty domain or depth)
+        client.query.queryByDomain(
+            { domain: domain, depth: depth, clientId: clientId },
+            { responseContentType: 'application/json' },
+            function(res) { updateGraphFunc(res.obj); });
+    }
+});
+
+function initializeGraph() {
     var width = $(window).width();
     var height = $(window).height() - 100;
     var force = d3.layout.force().charge(-300).linkDistance(100).size([width, height]);
 
-    var container = d3.select("#graph");
-    var svg = container.append("svg")
+    var svg = d3.select("#graph").append("svg")
         .attr("width", "100%").attr("height", "90%")
         .attr("pointer-events", "all");
 
@@ -15,22 +45,7 @@ $(function() {
         .attr("height", "100%")
         .attr("fill", "pink");
 
-    window.client = new SwaggerClient({
-        url: "/docs",
-        success: function() {
-            $("#queryBtn").click(function() {
-                client.query.queryByDomain(
-                    { domain: $("#domainInput").val(), depth: $("#depthInput").val() },
-                    { responseContentType: 'application/json' },
-                    function(res) {
-                        console.log(res.obj);
-                        updateGraph(res.obj);
-                    });
-            });
-        }
-    });
-
-    function updateGraph(data) {
+    return function(data) {
         if (data.nodes.length > 0) {
             // Fix the root node in the middle
             data.nodes[0].fixed = true;
@@ -78,4 +93,4 @@ $(function() {
             });
         });
     }
-});
+}

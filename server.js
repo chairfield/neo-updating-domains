@@ -7,10 +7,11 @@ var Cors = require('cors');
 var Swaggerize = require('swaggerize-express');
 var SwaggerUi = require('swaggerize-ui');
 var Path = require('path');
+var socketManager = require('./sockets/socketManager.js');
 
 var App = Express();
-
 var Server = Http.createServer(App);
+var io = require('socket.io')(Server);
 
 App.use(BodyParser.json());
 App.use(BodyParser.urlencoded({
@@ -29,6 +30,13 @@ App.use('/ui', SwaggerUi({
 }));
 
 App.use('/', Express.static(__dirname + '/static'));
+
+io.on('connection', socketManager.onConnection);
+
+setInterval(function() {
+    console.log('timer func');
+    socketManager.onChangeData({});
+}, 5000);
 
 Server.listen(8000, '127.0.0.1', function () {
     App.swagger.api.host = this.address().address + ':' + this.address().port;

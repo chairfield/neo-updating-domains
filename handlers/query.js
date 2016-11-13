@@ -1,5 +1,6 @@
 'use strict';
 var dataProvider = require('../data/query.js');
+
 /**
  * Operations on /query
  */
