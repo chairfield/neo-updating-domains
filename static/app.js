@@ -2,7 +2,7 @@
 $(function() {
     var width = $(window).width();
     var height = $(window).height() - 100;
-    var force = d3.layout.force().charge(-10).linkDistance(100).size([width, height]);
+    var force = d3.layout.force().charge(-300).linkDistance(100).size([width, height]);
 
     var container = d3.select("#graph");
     var svg = container.append("svg")
@@ -19,11 +19,11 @@ $(function() {
         url: "/docs",
         success: function() {
             $("#queryBtn").click(function() {
-                var domain = $("#domainInput").val();
                 client.query.queryByDomain(
-                    { domain: domain, depth: 1 },
+                    { domain: $("#domainInput").val(), depth: $("#depthInput").val() },
                     { responseContentType: 'application/json' },
                     function(res) {
+                        console.log(res.obj);
                         updateGraph(res.obj);
                     });
             });

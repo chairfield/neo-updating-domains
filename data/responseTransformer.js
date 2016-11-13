@@ -13,7 +13,7 @@ module.exports = {
                     domain: record.properties.domain,
                     ip: record.properties.ip,
                     id: record.identity.low
-                })
+                });
             }
         };
 
@@ -25,10 +25,20 @@ module.exports = {
                 pushNode(record[2]);
             }
             if (record[0] && record[0].length > 0) {
-                // TODO: Make this not O(N^2)
-                links.push({
-                    source: _.findIndex(nodes, function(n) { return n.id === record[0][0].start.low; }),
-                    target: _.findIndex(nodes, function(n) { return n.id === record[0][0].end.low; })
+                _.each(record[0], function(link) {
+                    var startIndex = _.findIndex(nodes, function(n) { return n.id === link.start.low; });
+                    var endIndex = _.findIndex(nodes, function(n) { return n.id === link.end.low; });
+                    // TODO: Make this not horrible
+                    if (!_.find(links, function(l) {
+                            return (l.source === startIndex && l.target === endIndex) ||
+                                   (l.source === endIndex && l.target === startIndex);
+                        })) {
+                        // TODO: Make this not O(N^2)
+                        links.push({
+                            source: startIndex,
+                            target: endIndex
+                        });
+                    }
                 });
             }
         });
