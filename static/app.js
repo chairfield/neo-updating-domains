@@ -10,8 +10,10 @@ $(function() {
         window.client = new SwaggerClient({
             url: "/docs",
             success: function() {
+                getDomains();
+
                 $("#queryBtn").click(function() { onQuery(socket.id); });
-                $("#getDomainsBtn").click(function() { onGetDomains(); });
+                $("#getDomainsBtn").click(function() { getDomains(); });
             }
         });
     });
@@ -30,7 +32,7 @@ $(function() {
             function(res) { updateGraphFunc(res.obj); });
     }
 
-    function onGetDomains() {
+    function getDomains() {
         client.domains.getTenDomains(
             null,
             { responseContentType: 'application/json' },
@@ -40,7 +42,10 @@ $(function() {
 
 function displayPossibleDomains(domains) {
     $("#possibleDomains").text(domains.join(", "));
+    $("#domainInput").val(domains[0]);
 }
+
+var oldData;
 
 function initializeGraph() {
     var width = $(window).width();
@@ -58,6 +63,11 @@ function initializeGraph() {
         .attr("fill", "pink");
 
     return function(data) {
+        if (oldData && _.isEqual(oldData, data)) {
+            console.error("data didn't change");
+        }
+        oldData = data;
+
         if (data.nodes.length > 0) {
             // Fix the root node in the middle
             data.nodes[0].fixed = true;

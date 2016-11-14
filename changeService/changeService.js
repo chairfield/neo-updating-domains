@@ -28,7 +28,7 @@ module.exports = {
 // TODO: deal with errors
 function changeSomething() {
     var random = Math.random();
-    if (nodeCount < 2500 || random < .08 && nodeCount < 50000) {
+    if (nodeCount < 5000 || random < .20) {
         console.time("add node");
         var n = Math.round(Math.random() * 1000000);
         neo4j.createNode(domains[n], randomIp(), function(err, result) {
@@ -37,7 +37,7 @@ function changeSomething() {
                 nodeCount++;
             }
         });
-    } else if (random < .14) {
+    } else if (random < .55) {
         console.time("rm node");
         var n = Math.round(Math.random() * nodeCount);
         console.log('count:', nodeCount);
