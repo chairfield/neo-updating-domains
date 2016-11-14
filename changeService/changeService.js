@@ -37,7 +37,7 @@ function changeSomething() {
                 nodeCount++;
             }
         });
-    } else if (random < .55) {
+    } else if (random < .45) {
         console.time("rm node");
         var n = Math.round(Math.random() * nodeCount);
         console.log('count:', nodeCount);

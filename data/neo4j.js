@@ -36,7 +36,7 @@ module.exports = {
         var records = [];
         var session = driver.session();
         session
-            .run("START a=node(*) RETURN a.domain LIMIT 10;")
+            .run("MATCH (n)-[]-() RETURN n.domain LIMIT 10;")
             .subscribe({
                 onNext: function(record) {
                     records.push(record._fields[0]);
