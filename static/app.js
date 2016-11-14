@@ -11,6 +11,7 @@ $(function() {
             url: "/docs",
             success: function() {
                 $("#queryBtn").click(function() { onQuery(socket.id); });
+                $("#getDomainsBtn").click(function() { onGetDomains(); });
             }
         });
     });
@@ -28,7 +29,18 @@ $(function() {
             { responseContentType: 'application/json' },
             function(res) { updateGraphFunc(res.obj); });
     }
+
+    function onGetDomains() {
+        client.domains.getTenDomains(
+            null,
+            { responseContentType: 'application/json' },
+            function(res) { displayPossibleDomains(res.obj); });
+    }
 });
+
+function displayPossibleDomains(domains) {
+    $("#possibleDomains").text(domains.join(", "));
+}
 
 function initializeGraph() {
     var width = $(window).width();

@@ -44,6 +44,22 @@ paths:
             $ref: "#/definitions/Error"
       tags:
         - query
+  /domains:
+    x-swagger-router-controller: domains
+    get:
+      description: Get 10 random domains from graph
+      operationId: getTenDomains
+      responses:
+        "200":
+          description: 10 random domains
+          schema:
+            $ref: "#/definitions/Domains"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - domains
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:
@@ -79,13 +95,20 @@ definitions:
         type: integer
         format: int32
         description: Neo4j ID of other node
+  Domains:
+    properties:
+      domains:
+        type: array
+        items:
+          $ref: "#/definitions/Domain"
+  Domain:
+    properties:
+      domain:
+        type: string
+        description: Domain Name
   Error:
     required:
-      - code
       - message
     properties:
-      code:
-        type: integer
-        format: int32
       message:
         type: string

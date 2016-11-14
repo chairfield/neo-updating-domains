@@ -1,5 +1,8 @@
 'use strict';
-var shortid = require('shortid');
+var fs = require('fs');
+console.time("read 1m domains");
+var domains = fs.readFileSync('./top-1m.csv').toString().trim().split("\n");
+console.timeEnd("read 1m domains");
 var neo4j = require('../data/neo4j.js');
 var socketManager = require('../sockets/socketManager.js');
 
@@ -25,17 +28,18 @@ module.exports = {
 // TODO: deal with errors
 function changeSomething() {
     var random = Math.random();
-    if (random < .15) {
+    if (random < .08 && nodeCount < 50000) {
         console.time("add node");
-        neo4j.createNode(randomDomain(), randomIp(), function(err, result) {
+        var n = Math.round(Math.random() * 1000000);
+        neo4j.createNode(domains[n], randomIp(), function(err, result) {
             console.timeEnd("add node");
             if (!err && result) {
                 nodeCount++;
             }
         });
-    } else if (random < .25) {
+    } else if (random < .14) {
         console.time("rm node");
-        var n = Math.round(Math.random()*nodeCount);
+        var n = Math.round(Math.random() * nodeCount);
         console.log('count:', nodeCount);
         neo4j.getNthNode(n, function(err, node) {
             // TODO: Delete by id faster?
@@ -49,8 +53,8 @@ function changeSomething() {
         });
     } else {
         console.time("add link");
-        var n1 = Math.round(Math.random()*nodeCount);
-        var n2 = Math.round(Math.random()*nodeCount);
+        var n1 = Math.round(Math.random() * nodeCount);
+        var n2 = Math.round(Math.random() * nodeCount);
         if (n1 !== n2) {
             neo4j.getNthNode(n1, function(err, node1) {
                 neo4j.getNthNode(n2, function(err, node2) {
@@ -68,12 +72,8 @@ function changeSomething() {
     }
 }
 
-function randomDomain() {
-    return shortid.generate() + '.' + shortid.generate();
-}
-
 function randomByte() {
-    return Math.round(Math.random()*256);
+    return Math.round(Math.random() * 256);
 }
 
 function randomIp() {

@@ -7,6 +7,7 @@ neo4j:
         - "7687:7687"
     volumes:
         - ./neo4j-data:/data
+        - ./bin:/scripts
 
 app:
     image: yo-express

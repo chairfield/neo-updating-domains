@@ -33,6 +33,22 @@ module.exports = {
                 onError: function(error) { onError(session, error, callback); }
             });
     },
+    queryForDomains: function(callback) {
+        var records = [];
+        var session = driver.session();
+        session
+            .run("START a=node(*) RETURN a.domain LIMIT 10;")
+            .subscribe({
+                onNext: function(record) {
+                    records.push(record._fields[0]);
+                },
+                onCompleted: function() {
+                    session.close();
+                    callback(null, records);
+                },
+                onError: function(error) { onError(session, error, callback); }
+            });
+    },
     createNode: function(domain, ip, callback) {
         var session = driver.session();
         session
@@ -80,9 +96,11 @@ module.exports = {
             });
     },
     linkNodes: function(id1, id2, callback) {
+        var query = util.format("START a=node(%d),b=node(%d) MERGE (a)-[:LinksTo]->(b);", id1, id2);
+
         var session = driver.session();
         session
-            .run("START a=node({id2}),b=node({id2}) MERGE (a)-[:LinksTo]->(b);", {id1: id1, id2: id2})
+            .run(query)
             .subscribe({
                 onCompleted: function() {
                     session.close();
