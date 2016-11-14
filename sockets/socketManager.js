@@ -30,12 +30,15 @@ module.exports = {
         clientData = {
             domain: domain,
             depth: depth,
-            nodeCache: graphData//transform(graphData)
+            nodeIds: _.map(graphData.nodes, function(n) {
+                return n.id;
+            })
         };
     },
-    onChangeData: function(changeData) {
-        if (clientSocket && changeData) {
-            if (changeDataAffectsClient(changeData)) {
+    onChangeData: function(changedNodes) {
+        if (clientSocket && changedNodes && clientData) {
+            if (changeDataAffectsClient(changedNodes)) {
+                console.log("client affected", clientData.nodeIds, changedNodes);
                 neo4j.queryByDomain(clientData.domain, clientData.depth, function(err, data) {
                     if (err) {
                         console.log("Neo4j Error:", err)
@@ -48,7 +51,6 @@ module.exports = {
     }
 };
 
-function changeDataAffectsClient(changeData) {
-    // TODO: Filter
-    return clientData;
+function changeDataAffectsClient(changedNodes) {
+    return _.intersection(clientData.nodeIds, changedNodes).length > 0;
 }

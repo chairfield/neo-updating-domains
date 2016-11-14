@@ -8,6 +8,7 @@ var Swaggerize = require('swaggerize-express');
 var SwaggerUi = require('swaggerize-ui');
 var Path = require('path');
 var socketManager = require('./sockets/socketManager.js');
+var changeService = require('./changeService/changeService.js');
 
 var App = Express();
 var Server = Http.createServer(App);
@@ -36,7 +37,11 @@ io.on('connection', socketManager.onConnection);
 setInterval(function() {
     console.log('timer func');
     socketManager.onChangeData({});
-}, 5000);
+}, 2000);
+
+setInterval(function() {
+    changeService.changeSomething();
+}, 100);
 
 Server.listen(8000, '127.0.0.1', function () {
     App.swagger.api.host = this.address().address + ':' + this.address().port;
