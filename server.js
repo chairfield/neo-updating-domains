@@ -41,9 +41,9 @@ Server.listen(8000, '0.0.0.0', function () {
     if (process.env.SWAGGER_HOST) {
         App.swagger.api.host = process.env.SWAGGER_HOST + ':' + this.address().port;
     } else {
-        App.swagger.api.host = this.address().host + ':' + this.address().port;
+        App.swagger.api.host = this.address().address + ':' + this.address().port;
     }
-    
+
     /* eslint-disable no-console */
     console.log('App running on %s', App.swagger.api.host);
     /* eslint-disable no-console */
