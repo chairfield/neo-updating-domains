@@ -2,6 +2,8 @@ neo4j:
     image: neo4j:3.0.7
     environment:
         NEO4J_AUTH: "none"
+        JVM_INIT_MEMORY: "128"
+        JVM_MAX_MEMORY: "192"
     ports:
         - "7474:7474"
         - "7687:7687"
