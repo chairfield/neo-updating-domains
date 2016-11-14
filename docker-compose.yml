@@ -1,9 +1,10 @@
 neo4j:
     image: neo4j:3.0.7
+    mem_limit: 350m
     environment:
         NEO4J_AUTH: "none"
-        JVM_INIT_MEMORY: "128"
-        JVM_MAX_MEMORY: "192"
+        NEO4J_dbms_memory_pagecache_size: "128"
+        NEO4J_dbms_memory_heap_maxSize: "192"
     ports:
         - "7474:7474"
         - "7687:7687"
