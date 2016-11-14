@@ -38,8 +38,11 @@ io.on('connection', socketManager.onConnection);
 changeService.start();
 
 Server.listen(8000, '0.0.0.0', function () {
-    App.swagger.api.host = /*this.address().address +*/ '159.203.89.35:' + this.address().port;
-    /* eslint-disable no-console */
-    console.log('App running on %s', App.swagger.api.host);
-    /* eslint-disable no-console */
+    var port = this.address().port;
+    require('dns').lookup(require('os').hostname(), function (err, addr, fam) {
+        App.swagger.api.host = addr + ':' + port;
+        /* eslint-disable no-console */
+        console.log('App running on %s', App.swagger.api.host);
+        /* eslint-disable no-console */
+    });
 });
