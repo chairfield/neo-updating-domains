@@ -1,0 +1,6 @@
+app:
+    image: chairfield/neo-updating-domains
+    environment:
+        SWAGGER_HOST: "159.203.89.35"
+    ports:
+        - "8000:8000"
