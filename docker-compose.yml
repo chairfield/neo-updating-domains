@@ -15,7 +15,9 @@ neo4j:
 app:
     image: chairfield/neo-updating-domains
     environment:
-        NEO_ADDRESS: "neo4j"
+        NEO_ADDRESS: "bolt://hobby-dhckhbppojekgbkebegjpiol.dbs.graphenedb.com:24786"
+        NEO_USERNAME: "domains"
+        NEO_PASSWORD: "dKluw1gF6ZpM7TWKwcfe"
     ports:
         - "8000:8000"
     links:

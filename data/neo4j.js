@@ -1,11 +1,18 @@
 'use strict';
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://" + neoAddress());
 var util = require('util');
 var responseTransformer = require('./responseTransformer.js');
 
+var driver = neo4j.driver(neoAddress(), neo4j.auth.basic(neoUsername(), neoPassword()));
+
 function neoAddress() {
-    return process.env.NEO_ADDRESS ? process.env.NEO_ADDRESS : "localhost";
+    return process.env.NEO_ADDRESS ? process.env.NEO_ADDRESS : "bolt://hobby-dhckhbppojekgbkebegjpiol.dbs.graphenedb.com:24786";
+}
+function neoUsername() {
+    return process.env.NEO_USERNAME ? process.env.NEO_USERNAME : "domains";
+}
+function neoPassword() {
+    return process.env.NEO_PASSWORD ? process.env.NEO_PASSWORD : "dKluw1gF6ZpM7TWKwcfe";
 }
 
 // TODO: Are all methods in use?

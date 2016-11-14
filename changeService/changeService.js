@@ -18,7 +18,7 @@ module.exports = {
                     nodeCount = count;
                     setInterval(function () {
                         changeSomething();
-                    }, 100);
+                    }, 200);
                 }
             });
         }, 100);
