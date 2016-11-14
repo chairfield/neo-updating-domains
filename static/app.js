@@ -44,11 +44,11 @@ function displayPossibleDomains(domains) {
 
 function initializeGraph() {
     var width = $(window).width();
-    var height = $(window).height() - 100;
+    var height = $(window).height() - 130;
     var force = d3.layout.force().charge(-300).linkDistance(100).size([width, height]);
 
     var svg = d3.select("#graph").append("svg")
-        .attr("width", "100%").attr("height", "90%")
+        .attr("width", "100%").attr("height", "85%")
         .attr("pointer-events", "all");
 
     // Background
