@@ -42,14 +42,16 @@ function changeSomething() {
         var n = Math.round(Math.random() * nodeCount);
         console.log('count:', nodeCount);
         neo4j.getNthNode(n, function(err, node) {
-            // TODO: Delete by id faster?
-            neo4j.deleteNodeByDomain(node.properties.domain, function(err, result) {
-                console.timeEnd("rm node");
-                if (!err && result) {
-                    nodeCount--;
-                    socketManager.onChangeData([ node.identity.low ]);
-                }
-            });
+            if (node) {
+                // TODO: Delete by id faster?
+                neo4j.deleteNodeByDomain(node.properties.domain, function(err, result) {
+                    console.timeEnd("rm node");
+                    if (!err && result) {
+                        nodeCount--;
+                        socketManager.onChangeData([ node.identity.low ]);
+                    }
+                });
+            }
         });
     } else {
         console.time("add link");
