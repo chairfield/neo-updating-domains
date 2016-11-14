@@ -1,25 +1,4 @@
-neo4j:
-    image: neo4j:3.0.7
-    mem_limit: 350m
-    environment:
-        NEO4J_AUTH: "none"
-        NEO4J_dbms_memory_pagecache_size: "128"
-        NEO4J_dbms_memory_heap_maxSize: "192"
-    ports:
-        - "7474:7474"
-        - "7687:7687"
-    volumes:
-        - ./neo4j-data:/data
-        - ./bin:/scripts
-
 app:
     image: chairfield/neo-updating-domains
-    environment:
-        NEO_ADDRESS: "bolt://hobby-dhckhbppojekgbkebegjpiol.dbs.graphenedb.com:24786"
-        NEO_USERNAME: "domains"
-        NEO_PASSWORD: "dKluw1gF6ZpM7TWKwcfe"
     ports:
         - "8000:8000"
-    links:
-        - neo4j
-

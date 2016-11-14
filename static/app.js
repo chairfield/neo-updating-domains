@@ -8,7 +8,7 @@ $(function() {
     socket.on('connect', function() {
         // TODO: Show something when the socket is connected
         window.client = new SwaggerClient({
-            url: "/docs",
+            url: "http://159.203.89.35:8000/docs",
             success: function() {
                 $("#queryBtn").click(function() { onQuery(socket.id); });
                 $("#getDomainsBtn").click(function() { onGetDomains(); });
