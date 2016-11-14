@@ -37,7 +37,7 @@ io.on('connection', socketManager.onConnection);
 // Start the service that adds and removes random data
 changeService.start();
 
-Server.listen(8000, '0.0.0.0', function () {
+Server.listen(8000, '159.203.89.35', function () {
     App.swagger.api.host = this.address().address + ':' + this.address().port;
     /* eslint-disable no-console */
     console.log('App running on %s', App.swagger.api.host);
