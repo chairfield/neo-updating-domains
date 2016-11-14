@@ -1,0 +1,19 @@
+neo4j:
+    image: neo4j:3.0.7-1k
+    environment:
+        NEO4J_AUTH: "none"
+    ports:
+        - "7474:7474"
+        - "7687:7687"
+    volumes:
+        - ./neo4j-data:/data
+
+app:
+    image: yo-express
+    environment:
+        NEO_ADDRESS: "neo4j"
+    ports:
+        - "8000:8000"
+    links:
+        - neo4j
+

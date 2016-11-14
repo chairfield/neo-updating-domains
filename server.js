@@ -35,15 +35,10 @@ App.use('/', Express.static(__dirname + '/static'));
 io.on('connection', socketManager.onConnection);
 
 setInterval(function() {
-    console.log('timer func');
-    socketManager.onChangeData({});
-}, 2000);
-
-setInterval(function() {
     changeService.changeSomething();
 }, 100);
 
-Server.listen(8000, '127.0.0.1', function () {
+Server.listen(8000, '0.0.0.0', function () {
     App.swagger.api.host = this.address().address + ':' + this.address().port;
     /* eslint-disable no-console */
     console.log('App running on %s', App.swagger.api.host);

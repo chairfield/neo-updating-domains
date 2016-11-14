@@ -1,6 +1,6 @@
 'use strict';
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost");
+var driver = neo4j.driver("bolt://" + process.env.NEO_ADDRESS);
 var util = require('util');
 var responseTransformer = require('./responseTransformer.js');
 
