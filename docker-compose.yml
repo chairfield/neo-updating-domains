@@ -10,7 +10,7 @@ neo4j:
         - ./bin:/scripts
 
 app:
-    image: yo-express
+    image: chairfield/neo-updating-domains
     environment:
         NEO_ADDRESS: "neo4j"
     ports:
