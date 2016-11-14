@@ -157,7 +157,6 @@ function genNode(id, domain, ip) {
         ],
         properties: {
             domain: domain,
-            id: "-1", // TODO: Delete id
             ip: ip
         }
     }

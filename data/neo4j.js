@@ -1,13 +1,18 @@
 'use strict';
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://" + process.env.NEO_ADDRESS);
+var driver = neo4j.driver("bolt://" + neoAddress());
 var util = require('util');
 var responseTransformer = require('./responseTransformer.js');
 
+function neoAddress() {
+    return process.env.NEO_ADDRESS ? process.env.NEO_ADDRESS : "localhost";
+}
+
+// TODO: Are all methods in use?
 module.exports = {
     queryByDomain: function(domain, depth, callback) {
 
-        // START n=node(212186) OPTIONAL MATCH (n)-[r*1..3]-(m) RETURN r, n, m;
+        // TODO: START n=node(212186) OPTIONAL MATCH (n)-[r*1..3]-(m) RETURN r, n, m;
         // "MATCH (n{domain:\"%s\"}) OPTIONAL MATCH (n)-[r]-() RETURN r, n;");
         var query = util.format(
             "MATCH (n{domain:\"%s\"}) OPTIONAL MATCH (n)-[r*1..%d]-(m) RETURN r, n, m;",
@@ -20,18 +25,12 @@ module.exports = {
         session
             .run(query)
             .subscribe({
-                onNext: function(record) {
-                    records.push(record._fields);
-                },
+                onNext: function(record) { records.push(record._fields); },
                 onCompleted: function() {
                     session.close();
                     callback(null, responseTransformer.transformResponse(records));
                 },
-                onError: function(error) {
-                    console.log("Neo4j error: ", error);
-                    session.close();
-                    callback(error, null);
-                }
+                onError: function(error) { onError(session, error, callback); }
             });
     },
     createNode: function(domain, ip, callback) {
@@ -39,16 +38,11 @@ module.exports = {
         session
             .run("CREATE (:Address {domain:{domain}, ip:{ip}});", {domain: domain, ip: ip})
             .subscribe({
-                onNext: function(record) {},
                 onCompleted: function() {
                     session.close();
                     callback(null, true);
                 },
-                onError: function(error) {
-                    console.log("Neo4j error: ", error);
-                    session.close();
-                    callback(error, false);
-                }
+                onError: function(error) { onError(session, error, callback); }
             });
     },
     getNodeCount: function(callback) {
@@ -56,36 +50,21 @@ module.exports = {
         session
             .run("START n=node(*) RETURN COUNT(*);")
             .subscribe({
-                onNext: function(record) {
-                    callback(null, record._fields[0].low);
-                },
-                onCompleted: function() {
-                    session.close();
-                },
-                onError: function(error) {
-                    console.log("Neo4j error: ", error);
-                    session.close();
-                    callback(error, null);
-                }
+                onNext: function(record) { callback(null, record._fields[0].low); },
+                onCompleted: function()  { session.close(); },
+                onError: function(error) { onError(session, error, callback); }
             });
     },
     getNthNode: function(n, callback) {
         var session = driver.session();
         session
-        // I actually don't care about the relationships:
+        // TODO: I actually don't care about the relationships:
             // "START n=node(*) OPTIONAL MATCH (n)-[r*1..1]-(m) RETURN r, n SKIP {n} LIMIT 1;"
             .run("START n=node(*) RETURN n SKIP {n} LIMIT 1;", {n: n})
             .subscribe({
-                onNext: function(record) {
-                    callback(null, record._fields[0]);
-                },
-                onCompleted: function() {
-                    session.close();
-                },
-                onError: function(error) {
-                    console.log("Neo4j error: ", error);
-                    session.close();
-                }
+                onNext: function(record) { callback(null, record._fields[0]); },
+                onCompleted: function()  { session.close(); },
+                onError: function(error) { onError(session, error, callback); }
             });
     },
     deleteNodeByDomain: function(domain, callback) {
@@ -97,10 +76,7 @@ module.exports = {
                     session.close();
                     callback(null, true);
                 },
-                onError: function(error) {
-                    console.log("Neo4j error: ", error);
-                    session.close();
-                }
+                onError: function(error) { onError(session, error, callback); }
             });
     },
     linkNodes: function(id1, id2, callback) {
@@ -112,11 +88,13 @@ module.exports = {
                     session.close();
                     callback(null, true);
                 },
-                onError: function(error) {
-                    console.log("Neo4j error: ", error);
-                    session.close();
-                    callback(error, false);
-                }
+                onError: function(error) { onError(session, error, callback); }
             });
     }
 };
+
+function onError(session, error, callback) {
+    session.close();
+    console.log("Neo4j error: ", error);
+    callback(error, null);
+}

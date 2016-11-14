@@ -34,9 +34,8 @@ App.use('/', Express.static(__dirname + '/static'));
 
 io.on('connection', socketManager.onConnection);
 
-setInterval(function() {
-    changeService.changeSomething();
-}, 100);
+// Start the service that adds and removes random data
+changeService.start();
 
 Server.listen(8000, '0.0.0.0', function () {
     App.swagger.api.host = this.address().address + ':' + this.address().port;
