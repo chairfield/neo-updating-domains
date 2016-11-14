@@ -58,14 +58,16 @@ function changeSomething() {
         if (n1 !== n2) {
             neo4j.getNthNode(n1, function(err, node1) {
                 neo4j.getNthNode(n2, function(err, node2) {
-                    var id1 = node1.identity.low;
-                    var id2 = node2.identity.low;
-                    neo4j.linkNodes(id1, id2, function(err, result) {
-                        console.timeEnd("add link");
-                        if (!err && result) {
-                            socketManager.onChangeData([id1, id2]);
-                        }
-                    });
+                    if (node1 && node2) {
+                        var id1 = node1.identity.low;
+                        var id2 = node2.identity.low;
+                        neo4j.linkNodes(id1, id2, function(err, result) {
+                            console.timeEnd("add link");
+                            if (!err && result) {
+                                socketManager.onChangeData([id1, id2]);
+                            }
+                        });
+                    }
                 });
             });
         }
