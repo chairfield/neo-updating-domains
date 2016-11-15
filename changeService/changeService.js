@@ -40,7 +40,7 @@ function changeSomething() {
     } else if (random < .45) {
         console.time("rm node");
         var n = Math.round(Math.random() * nodeCount);
-        console.log('count:', nodeCount);
+        console.log('pre-rm count:', nodeCount);
         neo4j.getNthNode(n, function(err, node) {
             if (node) {
                 // TODO: Delete by id faster?
